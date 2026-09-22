@@ -1,14 +1,23 @@
 {
   "domain": "film-submission-review",
-  "version": 1,
+  "version": 2,
   "sample_id": "092201-009",
   "record_types": [
     "影片报名",
     "媒体版本",
     "权利声明",
+    "国家地区",
+    "首映状态",
+    "放映授权",
+    "字幕信息",
+    "技术规格",
+    "报名声明",
     "补件记录",
+    "回避声明",
     "评委评分",
-    "审定结果"
+    "追加记录",
+    "审定结果",
+    "结果通知"
   ],
   "workflow_states": [
     "已报名",
@@ -16,13 +25,35 @@
     "可评审",
     "评审中",
     "已撤回",
-    "已审定"
+    "已审定",
+    "结果隔离",
+    "已通知"
   ],
   "facts": [
     "电影节收到大量国家和地区的影片报名",
     "活动包含金丝路奖评选",
-    "主宾国机制带来更多跨国电影合作"
+    "主宾国机制带来更多跨国电影合作",
+    "同一作品可能以导演剪辑版、不同字幕和多个报名主体重复出现，以文件摘要识别同源版本并全部保留",
+    "主创与联合制作权利、国家地区、首映状态、放映授权、字幕、技术规格和报名声明分别保存",
+    "补件、撤回、换版、调整单元和更正评分以追加记录体现，不覆盖历史",
+    "评委只能接触获授权内容，回避关系在分配影片前生效",
+    "未入选结果在正式通知前保持隔离",
+    "公布结论可回查适用章程、有效影片文件、独立评分与复核过程"
   ],
+  "policies": {
+    "append_only_events": [
+      "补件",
+      "撤回",
+      "换版",
+      "调整单元",
+      "更正评分"
+    ],
+    "dedup": "文件摘要一致视为同源重复上传，各次上传均保留作为参评依据",
+    "access": "评委仅可访问获放映授权的影片文件",
+    "recusal": "回避关系在分配影片前生效",
+    "isolation": "未入选结果在正式通知前保持隔离",
+    "traceability": "每个结论可回查适用章程、有效影片文件、独立评分与复核过程"
+  },
   "sample": {
     "film": "丝路短片样例",
     "countries": [
@@ -33,6 +64,149 @@
     "subtitle_languages": [
       "中文",
       "阿拉伯语"
-    ]
+    ],
+    "submission": {
+      "id": "SUB-2026-0001",
+      "section": "金丝路奖短片单元",
+      "state": "评审中",
+      "premiere_status": "亚洲首映",
+      "declarations": [
+        "原创性声明",
+        "版权授权声明",
+        "资料真实性声明"
+      ]
+    },
+    "rights": [
+      {
+        "kind": "主创权利",
+        "holder": "导演（虚构样例）",
+        "share": "60%"
+      },
+      {
+        "kind": "联合制作权利",
+        "holder": "联合制片方（虚构样例）",
+        "share": "40%"
+      }
+    ],
+    "media_versions": [
+      {
+        "id": "MV-0001",
+        "kind": "导演剪辑版",
+        "file_digest": "sha256:0a1b2c0001",
+        "upload_seq": 1,
+        "submitted_by": "报名主体甲（虚构）",
+        "state": "有效"
+      },
+      {
+        "id": "MV-0002",
+        "kind": "导演剪辑版",
+        "file_digest": "sha256:0a1b2c0001",
+        "upload_seq": 2,
+        "submitted_by": "报名主体乙（虚构）",
+        "state": "有效",
+        "note": "与 MV-0001 文件摘要一致，同源重复上传，均予保留"
+      },
+      {
+        "id": "MV-0003",
+        "kind": "字幕版",
+        "file_digest": "sha256:0a1b2c0002",
+        "upload_seq": 3,
+        "subtitle_languages": [
+          "阿拉伯语"
+        ],
+        "state": "有效"
+      }
+    ],
+    "technical_spec": {
+      "resolution": "4096x2160",
+      "codec": "ProRes 422 HQ",
+      "audio": "5.1",
+      "frame_rate": "24fps"
+    },
+    "screening_authorization": {
+      "id": "AUTH-0001",
+      "scope": "评委审片",
+      "granted": true,
+      "media": [
+        "MV-0001",
+        "MV-0003"
+      ]
+    },
+    "reviewable_files": [
+      "MV-0001",
+      "MV-0003"
+    ],
+    "missing_items": [
+      "联合制作权利证明"
+    ],
+    "recusals": [
+      {
+        "judge": "J-03",
+        "reason": "与联合制片方存在合作关系",
+        "declared_at": "2026-05-01",
+        "effective_before_assignment": true
+      }
+    ],
+    "scores": [
+      {
+        "id": "SCR-0001",
+        "judge": "J-07",
+        "value": 8,
+        "independent": true
+      },
+      {
+        "id": "SCR-0002",
+        "judge": "J-11",
+        "value": 9,
+        "independent": true
+      }
+    ],
+    "append_records": [
+      {
+        "seq": 1,
+        "type": "补件",
+        "at": "2026-05-02",
+        "detail": "补交技术规格表"
+      },
+      {
+        "seq": 2,
+        "type": "换版",
+        "at": "2026-05-20",
+        "detail": "放映版本由 MV-0001 换为 MV-0003"
+      },
+      {
+        "seq": 3,
+        "type": "调整单元",
+        "at": "2026-05-28",
+        "detail": "由主竞赛单元调整至金丝路奖短片单元"
+      },
+      {
+        "seq": 4,
+        "type": "更正评分",
+        "at": "2026-06-11",
+        "detail": "更正 SCR-0001 评分",
+        "score_id": "SCR-0001",
+        "from": 7,
+        "to": 8
+      }
+    ],
+    "decision": {
+      "id": "DEC-0001",
+      "result": "未入选",
+      "regulation": "金丝路奖章程（2026）第4.2条",
+      "valid_media": [
+        "MV-0003"
+      ],
+      "score_ids": [
+        "SCR-0001",
+        "SCR-0002"
+      ],
+      "review_process": [
+        "初审",
+        "复核"
+      ],
+      "isolated_until": "2026-09-30T10:00:00+08:00",
+      "notification_id": "NTF-0001"
+    }
   }
 }
